@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pastikan skrip berhenti jika ada kesalahan
+# Hentikan skrip jika ada ralat
 set -e
 
 # Kemas kini sistem
@@ -11,12 +11,20 @@ sudo apt update
 echo "📦 Memasang Python 3, pip, dan virtualenv..."
 sudo apt install -y python3 python3-pip python3-venv
 
-# Tukar ke folder projek (ubah laluan mengikut folder projek anda)
-cd ~/Documents/EXERCISE/Log_Analyzer || { echo "❌ Folder projek tidak dijumpai"; exit 1; }
+# Tukar ke folder projek
+PROJECT_DIR=~/Documents/EXERCISE/Log_Analyzer
+if [ -d "$PROJECT_DIR" ]; then
+    cd "$PROJECT_DIR"
+else
+    echo "❌ Folder projek tidak dijumpai: $PROJECT_DIR"
+    exit 1
+fi
 
-# Cipta virtual environment
-echo "🐍 Mencipta virtual environment..."
-python3 -m venv venv
+# Cipta virtual environment jika belum wujud
+if [ ! -d "venv" ]; then
+    echo "🐍 Mencipta virtual environment..."
+    python3 -m venv venv
+fi
 
 # Aktifkan virtual environment
 echo "✅ Mengaktifkan virtual environment..."
@@ -27,6 +35,6 @@ echo "📜 Memasang kebergantungan Python..."
 pip install --upgrade pip
 pip install -r Requirement.txt
 
-# Jalankan sistem (atau mana-mana fail yang anda mahu)
+# Jalankan sistem
 echo "🚀 Menjalankan log analyzer..."
 streamlit run System.py
