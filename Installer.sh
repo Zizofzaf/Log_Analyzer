@@ -1,67 +1,50 @@
-#!/bin/bash
+@echo off
+echo ====================================
+echo       🚀 Setup Sistem Bermula
+echo ====================================
 
-echo "===================================="
-echo "     🚀 Setup Sistem Bermula"
-echo "===================================="
+REM Semak Python
+where python >nul 2>nul
+IF ERRORLEVEL 1 (
+    echo ❌ Python tidak dijumpai. Sila pasang dahulu.
+    pause
+    exit /b
+)
 
-# Semak jika Python dipasang
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python3 tidak dijumpai. Sila pasang dahulu."
-    exit 1
-fi
+REM Buat virtual environment jika belum ada
+IF NOT EXIST venv (
+    echo 🔧 Membuat virtual environment...
+    python -m venv venv
+) ELSE (
+    echo ✅ Virtual environment sedia ada dijumpai.
+)
 
-# Semak jika pip dipasang
-if ! command -v pip3 &> /dev/null; then
-    echo "❌ pip3 tidak dijumpai. Sila pasang dahulu."
-    exit 1
-fi
+REM Aktifkan venv
+echo ⚙️  Mengaktifkan virtual environment...
+call venv\Scripts\activate.bat
 
-# Buat virtual environment jika belum ada
-if [ ! -d "venv" ]; then
-    echo "🔧 Membuat virtual environment..."
-    python3 -m venv venv
-else
-    echo "✅ Virtual environment sedia ada dijumpai."
-fi
+REM Upgrade pip dan install keperluan
+echo 📦 Memasang dependencies...
+python -m pip install --upgrade pip
 
-# Aktifkan venv
-echo "⚙️  Mengaktifkan virtual environment..."
-source venv/bin/activate
-
-# Upgrade pip dan install requirements
-echo "📦 Memasang dependencies..."
-pip install --upgrade pip
-
-if [ -f "requirements.txt" ]; then
+IF EXIST requirements.txt (
     pip install -r requirements.txt
-else
-    echo "❗ requirements.txt tidak dijumpai. Teruskan tanpa install dependencies fail."
-fi
+) ELSE (
+    echo ❗ requirements.txt tidak dijumpai!
+)
 
-# Jalankan Streamlit App
-if [ -f "app.py" ]; then
-    echo "🚀 Menjalankan aplikasi Streamlit..."
+REM Jalankan Streamlit App
+IF EXIST app.py (
+    echo 🚀 Menjalankan aplikasi Streamlit...
+    start "" http://localhost:8501
+    streamlit run app.py
+) ELSE (
+    echo ❗ app.py tidak dijumpai!
+)
 
-    # Jalankan dalam background & buka browser
-    streamlit run app.py &
-
-    # Tunggu server ready sebelum buka browser (anggaran 3 saat)
-    sleep 3
-
-    # Buka dalam browser default
-    if command -v xdg-open &> /dev/null; then
-        xdg-open http://localhost:8501
-    elif command -v open &> /dev/null; then
-        open http://localhost:8501  # untuk macOS
-    else
-        echo "📎 Sila buka pelayar dan pergi ke: http://localhost:8501"
-    fi
-else
-    echo "❗ app.py tidak dijumpai!"
-fi
-
-echo "===================================="
-echo "     ✅ Setup Siap! Enjoy 🚀"
-echo "     Untuk aktifkan semula venv:"
-echo "     source venv/bin/activate"
-echo "===================================="
+echo ====================================
+echo       ✅ Setup Selesai!
+echo       Untuk aktifkan venv semula:
+echo       venv\Scripts\activate.bat
+echo ====================================
+pause
