@@ -1,32 +1,32 @@
 #!/bin/bash
 
-# Exit the script immediately if any command fails
+# Pastikan skrip berhenti jika ada kesalahan
 set -e
 
-# Update the system
-echo "🔧 Updating the system..."
+# Kemas kini sistem
+echo "🔧 Mengemas kini sistem..."
 sudo apt update
 
-# Install required packages
-echo "📦 Installing Python 3, pip, and virtualenv..."
+# Pasang keperluan
+echo "📦 Memasang Python 3, pip, dan virtualenv..."
 sudo apt install -y python3 python3-pip python3-venv
 
-# Change to the project directory (modify this path according to your project folder)
-cd ~/Documents/EXERCISE/Log_Analyzer || { echo "❌ Project folder not found"; exit 1; }
+# Tukar ke folder projek (ubah laluan mengikut folder projek anda)
+cd ~/Documents/EXERCISE/Log_Analyzer || { echo "❌ Folder projek tidak dijumpai"; exit 1; }
 
-# Create a virtual environment
-echo "🐍 Creating virtual environment..."
+# Cipta virtual environment
+echo "🐍 Mencipta virtual environment..."
 python3 -m venv venv
 
-# Activate the virtual environment
-echo "✅ Activating virtual environment..."
+# Aktifkan virtual environment
+echo "✅ Mengaktifkan virtual environment..."
 source venv/bin/activate
 
-# Install Python dependencies
-echo "📜 Installing Python dependencies..."
+# Pasang kebergantungan Python
+echo "📜 Memasang kebergantungan Python..."
 pip install --upgrade pip
 pip install -r Requirement.txt
 
-# Run the system (or any file you want to execute)
-echo "🚀 Running log analyzer..."
+# Jalankan sistem (atau mana-mana fail yang anda mahu)
+echo "🚀 Menjalankan log analyzer..."
 streamlit run System.py
