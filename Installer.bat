@@ -20,7 +20,7 @@ IF NOT EXIST venv (
 )
 
 REM Aktifkan venv
-echo ⚙️  Mengaktifkan virtual environment...
+echo ⚙️ Mengaktifkan virtual environment...
 call venv\Scripts\activate.bat
 
 REM Upgrade pip dan install keperluan
