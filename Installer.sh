@@ -1,58 +1,36 @@
 #!/bin/bash
 
-set -e  # Henti jika ada ralat
+# Warna untuk output
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 
-# === CONFIGURATION ===
-GIT_REPO="https://github.com/username/repo-name.git"  # <-- Ganti dengan repo sebenar anda
-REPO_NAME=$(basename "$GIT_REPO" .git)
-INSTALL_DIR=~/Documents/EXERCISE/$REPO_NAME
+echo -e "${GREEN}Starting installation...${NC}"
 
-# === PERSIAPAN ===
-echo "📁 Membuat folder jika belum wujud..."
-mkdir -p ~/Documents/EXERCISE
-
-# === CLONE PROJEK ===
-if [ ! -d "$INSTALL_DIR" ]; then
-    echo "📥 Clone projek dari GitHub..."
-    git clone "$GIT_REPO" "$INSTALL_DIR"
-else
-    echo "✅ Projek sudah ada. Menggunakan salinan sedia ada."
+# 1. Update dan install Python serta pip (jika belum ada)
+echo -e "${GREEN}Checking for Python...${NC}"
+if ! command -v python3 &> /dev/null
+then
+    echo -e "${GREEN}Python3 not found. Installing...${NC}"
+    sudo apt update
+    sudo apt install python3 -y
 fi
 
-cd "$INSTALL_DIR" || { echo "❌ Gagal masuk ke folder projek."; exit 1; }
-
-# === SISTEM UPDATE & INSTALL DEPENDENCIES ===
-echo "🔧 Mengemas kini sistem dan pasang keperluan..."
-sudo apt update
-sudo add-apt-repository universe -y
-sudo apt update
-sudo apt install -y python3 python3-pip python3-venv
-
-# === VIRTUAL ENV SETUP ===
-if [ ! -d "venv" ]; then
-    echo "🐍 Mewujudkan virtual environment..."
-    python3 -m venv venv
+echo -e "${GREEN}Checking for pip...${NC}"
+if ! command -v pip3 &> /dev/null
+then
+    echo -e "${GREEN}pip not found. Installing...${NC}"
+    sudo apt install python3-pip -y
 fi
 
-echo "✅ Mengaktifkan virtual environment..."
+# 2. Create virtual environment (optional tapi recommended)
+echo -e "${GREEN}Creating virtual environment...${NC}"
+python3 -m venv venv
 source venv/bin/activate
 
-# === INSTALL PYTHON REQUIREMENTS ===
-echo "📜 Memasang dependencies Python..."
-pip install --upgrade pip
+# 3. Install dependencies
+echo -e "${GREEN}Installing Python dependencies...${NC}"
+pip install -r Requirement.txt
 
-if [ -f "Requirement.txt" ]; then
-    pip install -r Requirement.txt
-else
-    echo "❗ Requirement.txt tidak dijumpai."
-    exit 1
-fi
-
-# === JALANKAN SISTEM ===
-if [ -f "System.py" ]; then
-    echo "🚀 Menjalankan sistem Log Analyzer..."
-    streamlit run System.py
-else
-    echo "❗ Fail System.py tidak dijumpai."
-    exit 1
-fi
+# 4. Run system
+echo -e "${GREEN}Running system...${NC}"
+python3 System.py
