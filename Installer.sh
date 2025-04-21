@@ -1,36 +1,35 @@
 #!/bin/bash
 
-# Warna untuk output
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}Starting installation...${NC}"
+echo -e "${GREEN}Starting Log Analyzer installation...${NC}"
 
-# 1. Update dan install Python serta pip (jika belum ada)
-echo -e "${GREEN}Checking for Python...${NC}"
-if ! command -v python3 &> /dev/null
-then
+# 1. Check for Python3
+if ! command -v python3 &> /dev/null; then
     echo -e "${GREEN}Python3 not found. Installing...${NC}"
     sudo apt update
     sudo apt install python3 -y
 fi
 
-echo -e "${GREEN}Checking for pip...${NC}"
-if ! command -v pip3 &> /dev/null
-then
-    echo -e "${GREEN}pip not found. Installing...${NC}"
+# 2. Check for pip
+if ! command -v pip3 &> /dev/null; then
+    echo -e "${GREEN}pip3 not found. Installing...${NC}"
     sudo apt install python3-pip -y
 fi
 
-# 2. Create virtual environment (optional tapi recommended)
+# 3. Create virtual environment
 echo -e "${GREEN}Creating virtual environment...${NC}"
 python3 -m venv venv
+
+# 4. Activate venv
 source venv/bin/activate
 
-# 3. Install dependencies
-echo -e "${GREEN}Installing Python dependencies...${NC}"
+# 5. Install requirements
+echo -e "${GREEN}Installing required Python packages...${NC}"
+pip install --upgrade pip
 pip install -r Requirement.txt
 
-# 4. Run system
-echo -e "${GREEN}Running system...${NC}"
-python3 System.py
+# 6. Run system.py
+echo -e "${GREEN}Running Log Analyzer...${NC}"
+python system.py
