@@ -11,6 +11,15 @@ IF ERRORLEVEL 1 (
     exit /b
 )
 
+REM Semak untuk install python3-venv
+echo 🔍 Memeriksa keperluan untuk `venv`...
+python -m venv --help >nul 2>nul
+IF ERRORLEVEL 1 (
+    echo ❌ Modul venv tidak dijumpai. Memasang python3-venv...
+    python -m pip install --upgrade pip
+    python -m pip install virtualenv
+)
+
 REM Buat virtual environment jika belum ada
 IF NOT EXIST venv (
     echo 🔧 Membuat virtual environment...
