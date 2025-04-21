@@ -1,18 +1,18 @@
 #!/bin/bash
 
 echo "===================================="
-echo "     Sistem Setup Bermula..."
+echo "     🚀 Setup Sistem Bermula"
 echo "===================================="
 
 # Semak jika Python dipasang
 if ! command -v python3 &> /dev/null; then
-    echo "❌ Python3 tidak dijumpai. Sila pasang Python3 dahulu."
+    echo "❌ Python3 tidak dijumpai. Sila pasang dahulu."
     exit 1
 fi
 
 # Semak jika pip dipasang
 if ! command -v pip3 &> /dev/null; then
-    echo "❌ pip3 tidak dijumpai. Sila pasang pip dahulu."
+    echo "❌ pip3 tidak dijumpai. Sila pasang dahulu."
     exit 1
 fi
 
@@ -21,32 +21,47 @@ if [ ! -d "venv" ]; then
     echo "🔧 Membuat virtual environment..."
     python3 -m venv venv
 else
-    echo "✅ Virtual environment sudah wujud."
+    echo "✅ Virtual environment sedia ada dijumpai."
 fi
 
-# Aktifkan virtual environment
-echo "⚙️  Aktifkan virtual environment..."
+# Aktifkan venv
+echo "⚙️  Mengaktifkan virtual environment..."
 source venv/bin/activate
 
-# Pasang keperluan dari requirements.txt
+# Upgrade pip dan install requirements
+echo "📦 Memasang dependencies..."
+pip install --upgrade pip
+
 if [ -f "requirements.txt" ]; then
-    echo "📦 Memasang dependencies dari requirements.txt..."
-    pip install --upgrade pip
     pip install -r requirements.txt
 else
-    echo "❌ requirements.txt tidak dijumpai!"
-    exit 1
+    echo "❗ requirements.txt tidak dijumpai. Teruskan tanpa install dependencies fail."
 fi
 
+# Jalankan Streamlit App
 if [ -f "app.py" ]; then
-    echo "🚀 Menjalankan sistem Streamlit..."
-    streamlit run app.py
+    echo "🚀 Menjalankan aplikasi Streamlit..."
+
+    # Jalankan dalam background & buka browser
+    streamlit run app.py &
+
+    # Tunggu server ready sebelum buka browser (anggaran 3 saat)
+    sleep 3
+
+    # Buka dalam browser default
+    if command -v xdg-open &> /dev/null; then
+        xdg-open http://localhost:8501
+    elif command -v open &> /dev/null; then
+        open http://localhost:8501  # untuk macOS
+    else
+        echo "📎 Sila buka pelayar dan pergi ke: http://localhost:8501"
+    fi
 else
-    echo "ℹ️  app.py tidak dijumpai. Setup selesai tanpa run aplikasi."
+    echo "❗ app.py tidak dijumpai!"
 fi
 
 echo "===================================="
-echo "     ✅ Setup Selesai!"
-echo "     Aktifkan semula venv bila perlu:"
+echo "     ✅ Setup Siap! Enjoy 🚀"
+echo "     Untuk aktifkan semula venv:"
 echo "     source venv/bin/activate"
 echo "===================================="
