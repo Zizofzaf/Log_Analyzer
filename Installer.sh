@@ -38,10 +38,9 @@ else
     exit 1
 fi
 
-# Jalankan app jika ada
 if [ -f "app.py" ]; then
-    echo "🚀 Menjalankan sistem..."
-   streamlit run app.py  # tukar ke streamlit run app.py jika guna Streamlit
+    echo "🚀 Menjalankan sistem Streamlit..."
+    streamlit run app.py
 else
     echo "ℹ️  app.py tidak dijumpai. Setup selesai tanpa run aplikasi."
 fi
