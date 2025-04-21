@@ -1,44 +1,44 @@
 #!/bin/bash
 
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+# Installer.sh – Setup script untuk sistem Python
 
-echo -e "${GREEN}Starting Log Analyzer installation...${NC}"
+echo "===================================="
+echo "     Sistem Setup Bermula..."
+echo "===================================="
 
-# 1. Auto-pull latest changes
-echo -e "${GREEN}Checking for updates...${NC}"
-git pull origin main
-
-# 2. Check for Python3
+# Semak jika Python dipasang
 if ! command -v python3 &> /dev/null; then
-    echo -e "${GREEN}Python3 not found. Installing...${NC}"
-    sudo apt update
-    sudo apt install python3 -y
+    echo "Python3 tidak dijumpai. Sila pasang Python3 dahulu."
+    exit 1
 fi
 
-# 3. Check for pip
+# Semak jika pip dipasang
 if ! command -v pip3 &> /dev/null; then
-    echo -e "${GREEN}pip3 not found. Installing...${NC}"
-    sudo apt install python3-pip -y
+    echo "pip3 tidak dijumpai. Sila pasang pip dahulu."
+    exit 1
 fi
 
-# 4. Check if virtual environment already exists
-if [ ! -d "venv" ]; then
-    echo -e "${GREEN}Creating virtual environment...${NC}"
-    python3 -m venv venv
-else
-    echo -e "${GREEN}Virtual environment found. Skipping creation...${NC}"
-fi
+# Buat virtual environment
+echo "Membuat virtual environment..."
+python3 -m venv venv
 
-# 5. Activate virtual environment
-echo -e "${GREEN}Activating virtual environment...${NC}"
+# Aktifkan virtual environment
+echo "Aktifkan virtual environment..."
 source venv/bin/activate
 
-# 6. Install requirements
-echo -e "${GREEN}Installing required Python packages...${NC}"
-pip install --upgrade pip
-pip install -r Requirement.txt
+# Pasang keperluan dari requirements.txt
+if [ -f "requirements.txt" ]; then
+    echo "Memasang dependencies dari requirements.txt..."
+    pip install -r requirements.txt
+else
+    echo "requirements.txt tidak dijumpai!"
+    exit 1
+fi
 
-# 7. Run system.py
-echo -e "${GREEN}Running Log Analyzer...${NC}"
-python System.py
+# Jalankan sistem (contohnya app.py)
+echo "Menjalankan sistem..."
+python app.py  # atau streamlit run app.py jika guna Streamlit
+
+echo "===================================="
+echo "     Setup Selesai! Sistem Ready."
+echo "===================================="
