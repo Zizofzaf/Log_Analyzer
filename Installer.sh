@@ -1,40 +1,58 @@
 #!/bin/bash
 
-# Hentikan skrip jika ada ralat
-set -e
+set -e  # Henti jika ada ralat
 
-# Kemas kini sistem
-echo "🔧 Mengemas kini sistem..."
-sudo apt update
+# === CONFIGURATION ===
+GIT_REPO="https://github.com/username/repo-name.git"  # <-- Ganti dengan repo sebenar anda
+REPO_NAME=$(basename "$GIT_REPO" .git)
+INSTALL_DIR=~/Documents/EXERCISE/$REPO_NAME
 
-# Pasang keperluan
-echo "📦 Memasang Python 3, pip, dan virtualenv..."
-sudo apt install -y python3 python3-pip python3-venv
+# === PERSIAPAN ===
+echo "📁 Membuat folder jika belum wujud..."
+mkdir -p ~/Documents/EXERCISE
 
-# Tukar ke folder projek
-PROJECT_DIR=~/Documents/EXERCISE/Log_Analyzer
-if [ -d "$PROJECT_DIR" ]; then
-    cd "$PROJECT_DIR"
+# === CLONE PROJEK ===
+if [ ! -d "$INSTALL_DIR" ]; then
+    echo "📥 Clone projek dari GitHub..."
+    git clone "$GIT_REPO" "$INSTALL_DIR"
 else
-    echo "❌ Folder projek tidak dijumpai: $PROJECT_DIR"
-    exit 1
+    echo "✅ Projek sudah ada. Menggunakan salinan sedia ada."
 fi
 
-# Cipta virtual environment jika belum wujud
+cd "$INSTALL_DIR" || { echo "❌ Gagal masuk ke folder projek."; exit 1; }
+
+# === SISTEM UPDATE & INSTALL DEPENDENCIES ===
+echo "🔧 Mengemas kini sistem dan pasang keperluan..."
+sudo apt update
+sudo add-apt-repository universe -y
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv
+
+# === VIRTUAL ENV SETUP ===
 if [ ! -d "venv" ]; then
-    echo "🐍 Mencipta virtual environment..."
+    echo "🐍 Mewujudkan virtual environment..."
     python3 -m venv venv
 fi
 
-# Aktifkan virtual environment
 echo "✅ Mengaktifkan virtual environment..."
 source venv/bin/activate
 
-# Pasang kebergantungan Python
-echo "📜 Memasang kebergantungan Python..."
+# === INSTALL PYTHON REQUIREMENTS ===
+echo "📜 Memasang dependencies Python..."
 pip install --upgrade pip
-pip install -r Requirement.txt
 
-# Jalankan sistem
-echo "🚀 Menjalankan log analyzer..."
-streamlit run System.py
+if [ -f "Requirement.txt" ]; then
+    pip install -r Requirement.txt
+else
+    echo "❗ Requirement.txt tidak dijumpai."
+    exit 1
+fi
+
+# === JALANKAN SISTEM ===
+if [ -f "System.py" ]; then
+    echo "🚀 Menjalankan sistem Log Analyzer..."
+    streamlit run System.py
+else
+    echo "❗ Fail System.py tidak dijumpai."
+    exit 1
+fi
